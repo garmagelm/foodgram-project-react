@@ -1,7 +1,5 @@
-FROM python:3.8-slim
+FROM python:3.8.5
 WORKDIR /code
-COPY requirements.txt /code
-RUN pip install --upgrade pip && pip install -r /code/requirements.txt
-COPY . /code
-CMD python manage.py migrate
-CMD gunicorn foodgram_api.wsgi:application --bind 0.0.0.0:8000
+COPY . .
+RUN pip install -U pip && pip install -r requirements.txt
+CMD gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000
