@@ -66,4 +66,4 @@ docker-compose exec web python manage.py loaddata ingredients.json
 
 ![workflow](https://github.com/garmagelm/foodgram-project-react/actions/workflows/foodgram_project.yml/badge.svg)
 
-Развернутый на сервере проект (http://62.84.117.104/admin/)
+Развернутый на сервере проект (http://62.84.117.104/)

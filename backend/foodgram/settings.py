@@ -3,11 +3,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SECRET_KEY = 'u0f3erjosvwx=f2$t!e=k=sh#lzp&4m3f^&j2(o@pnx-@)gb^o'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='default')
 
-DEBUG = False
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', default=False))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('HOSTS', default='*').split(',')
 
 
 INSTALLED_APPS = [
@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'import_export',
     'djoser',
     'users',
-    'api',
+    'recipes',
 ]
 
 MIDDLEWARE = [
