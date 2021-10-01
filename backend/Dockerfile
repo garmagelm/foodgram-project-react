@@ -1,5 +1,8 @@
 FROM python:3.8.5
 WORKDIR /code
-COPY . .
-RUN pip install -U pip && pip install -r requirements.txt
-CMD gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000
+COPY requirements.txt /code
+RUN pip install --upgrade pip
+RUN pip3 install -r requirements.txt
+COPY . /code
+RUN chmod +x ./start.sh
+CMD ["./start.sh"]
