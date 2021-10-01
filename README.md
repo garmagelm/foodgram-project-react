@@ -40,7 +40,7 @@ docker-compose exec web python manage.py migrate --noinput
 ```bash
 docker-compose exec web python manage.py createsuperuser
 ```
-4. Подгружаем статику 
+4. Собераем файлы статики в одну директорию: 
 ```bash
 docker-compose exec web python manage.py collectstatic --no-input
 ```
