@@ -70,6 +70,7 @@ jobs:
             # Создаст файл для переменных окружения
             touch .env
             # Наполнит файл переменными окружения из секретов GitHub
+            echo HOSTS=${{ secrets.HOSTS }} >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
