@@ -41,7 +41,7 @@ class CustomUserViewSet(UserViewSet):
             url_name='subscriptions',
             permission_classes=[permissions.IsAuthenticated])
     def show_follows(self, request):
-        user_obj = User.objects.filter(following__user=request.user)
+        user_obj = User.followers.filter(user=request.user)
         paginator = PageNumberPagination()
         paginator.page_size = 6
         result_page = paginator.paginate_queryset(user_obj, request)
