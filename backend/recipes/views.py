@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 
-import django_filters.rest_framework
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -29,11 +29,12 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+class RecipesViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all().order_by('-id')
     filter_class = RecipeFilter
     pagination_class = PageNumberPagination
     permission_classes = [AdminOrAuthorOrReadOnly, ]
+    filter_backends = [DjangoFilterBackend]
 
     def get_serializer_class(self):
         if self.request.method in ['GET']:
