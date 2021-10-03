@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from import_export.admin import ImportMixin
 
 from .models import Favorite, Ingredient, IngredientForRecipe, Recipe, Tag
