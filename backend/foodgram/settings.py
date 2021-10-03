@@ -2,13 +2,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 SECRET_KEY = os.environ.get('SECRET_KEY', default='default')
 
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', default=False))
 
 ALLOWED_HOSTS = os.environ.get('HOSTS', default='*').split(',')
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,14 +55,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
-
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -93,13 +93,11 @@ USE_L10N = True
 
 USE_TZ = 'Russia/Moscow'
 
-
 STATIC_URL = '/backend_static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
 
 MEDIA_URL = "/backend_media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "backend_media")
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

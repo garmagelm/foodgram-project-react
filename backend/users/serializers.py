@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-
-from recipes.models import Recipe
 from rest_framework import serializers
 
+from recipes.models import Recipe
 from .models import Follow
 
 User = get_user_model()
@@ -70,9 +68,3 @@ class FollowSerializer(serializers.ModelSerializer):
         elif follow_exist:
             raise serializers.ValidationError({"errors": 'Вы уже подписаны'})
         return data
-
-    def create(self, validated_data):
-        author = validated_data.get('author')
-        author = get_object_or_404(User, pk=author.get('id'))
-        user = validated_data.get('user')
-        return Follow.objects.create(user=user, author=author)

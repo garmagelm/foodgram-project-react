@@ -1,38 +1,29 @@
-import django_filters as filters
+from django_filters import rest_framework as filters
+from rest_framework.filters import SearchFilter
 
-from .models import Ingredient, Recipe, Purchase, Favorite
+from .models import Recipe, User
 
 
-class IngredientNameFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name='name', lookup_expr='istartswith')
-
-    class Meta:
-        model = Ingredient
-        fields = ('name', 'measurement_unit')
+class IngredientNameFilter(SearchFilter):
+    search_param = 'name'
 
 
 class RecipeFilter(filters.FilterSet):
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    authot = filters.ModelChoiceFilter(queryset=User.objects.all())
+    is_favorited = filters.BooleanFilter(method='get_favorite')
+    is_in_shopping_cart = filters.BooleanFilter(method='get_shopping')
 
     class Meta:
         model = Recipe
-        fields = ('author', 'tags')
+        fields = ('author', 'tags', 'is_favorited', 'is_in_shopping_cart')
 
-    def get_queryset(self):
-        queryset = Recipe.objects.all()
-        is_in_shopping_cart = self.request.query_params.get(
-            "is_in_shopping_cart"
-        )
-        is_favorited = self.request.query_params.get("is_favorited")
-        cart = Purchase.objects.filter(user=self.request.user.id)
-        favorite = Favorite.objects.filter(user=self.request.user.id)
+    def get_favorite(self, queryset, name, value):
+        if value:
+            return Recipe.objects.filter(favorites__user=self.request.user)
+        return Recipe.objects.all()
 
-        if is_in_shopping_cart == "true":
-            queryset = queryset.filter(purchase__in=cart)
-        elif is_in_shopping_cart == "false":
-            queryset = queryset.exclude(purchase__in=cart)
-        if is_favorited == "true":
-            queryset = queryset.filter(favorites__in=favorite)
-        elif is_favorited == "false":
-            queryset = queryset.exclude(favorites__in=favorite)
-        return queryset.all()
+    def get_shopping(self, queryset, name, value):
+        if value:
+            return Recipe.objects.filter(purchase__user=self.request.user)
+        return Recipe.objects.all()

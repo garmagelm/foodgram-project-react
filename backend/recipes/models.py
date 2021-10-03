@@ -12,6 +12,13 @@ class Tag(models.Model):
         max_length=200,
         unique=True,
     )
+    color = models.CharField(
+        verbose_name='Цвет',
+        help_text='Введите цвет тега',
+        unique=True,
+        null=False,
+        max_length=7
+    )
     slug = models.CharField(
         verbose_name='Уникальный слаг',
         help_text='Введите уникальный слаг',
@@ -109,13 +116,12 @@ class IngredientForRecipe(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Количество ингредиента в рецепте'
         constraints = [
             models.UniqueConstraint(
-                fields=['recipe', 'ingredient'],
-                name='unique_ingredients',
-            ),
+                fields=['recipe', 'ingredient'], name='unique_ingredient'
+            )
         ]
-        verbose_name = 'Количество ингредиента в рецепте'
 
     def __str__(self):
         return f'{self.ingredient} в {self.recipe}'

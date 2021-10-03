@@ -1,16 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
-
-import django_filters.rest_framework
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from users.serializers import RecipeSubscriptionSerializer
 
+from users.serializers import RecipeSubscriptionSerializer
 from .filters import IngredientNameFilter, RecipeFilter
 from .models import (Favorite, Ingredient, IngredientForRecipe, Purchase,
                      Recipe, Tag)
@@ -22,19 +21,19 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 User = get_user_model()
 
 
-class TagViewSet(viewsets.ReadOnlyModelViewSet):
+class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
     permission_classes = (AllowAny,)
     pagination_class = None
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+class RecipesViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all().order_by('-id')
     filter_class = RecipeFilter
     pagination_class = PageNumberPagination
     permission_classes = [AdminOrAuthorOrReadOnly, ]
+    filter_backends = [DjangoFilterBackend]
 
     def get_serializer_class(self):
         if self.request.method in ['GET']:
@@ -69,34 +68,33 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     permission_classes = (AllowAny, )
     pagination_class = None
-    filterset_class = IngredientNameFilter
+    filter_backends = [IngredientNameFilter]
+    search_fields = ['^name']
 
 
 @api_view(['GET', ])
 @permission_classes([IsAuthenticated])
 def download_shopping_cart(request):
     user = request.user
-    buying_list = {}
-    ingredients_in_recipe = list(IngredientForRecipe.objects.filter(
+    ingredients = list(IngredientForRecipe.objects.filter(
         recipe__in_cart__user=user).values_list('ingredient', flat=True))
-    for item in ingredients_in_recipe:
-        amount = item.amount
+    buying_list = {}
+    for item in ingredients:
         name = item.ingredient.name
         measurement_unit = item.ingredient.measurement_unit
+        amount = item.amount
         if name not in buying_list:
             buying_list[name] = {
                 'amount': amount,
                 'measurement_unit': measurement_unit
             }
         else:
-            buying_list[name]['amount'] = (
-                buying_list[name]['amount'] + amount
-            )
+            buying_list[name]['amount'] += amount
     shopping_list = []
-    for item in buying_list:
-        shopping_list.append(
-            f'{item} - {buying_list[item]["amount"]}, '
-            f'{buying_list[item]["measurement_unit"]}\n'
+    for item, value in buying_list:
+        shopping_list.append = (
+            f'{item} - {value["amount"]}, '
+            f'{value["measurement_unit"]}\n'
         )
     response = HttpResponse(shopping_list, 'Content-Type: text/plain')
     response['Content-Disposition'] = (
@@ -126,6 +124,5 @@ class ShoppingCartView(APIView):
         cart = get_object_or_404(Purchase, user=user, recipe__id=recipe_id)
         cart.delete()
         return Response(
-            f'Рецепт {cart.recipe} удален из корзины у пользователя {user}, '
-            f'status=status.HTTP_204_NO_CONTENT'
-        )
+            f'Рецепт {cart.recipe} удален из корзины у пользователя {user}',
+            f'{request.user}', status=status.HTTP_204_NO_CONTENT)

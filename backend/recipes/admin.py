@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from import_export.admin import ImportMixin
 
 from .models import Favorite, Ingredient, IngredientForRecipe, Recipe, Tag
@@ -26,7 +25,7 @@ class IngredientAdmin(ImportMixin, admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')
+    list_display = ('name', 'color', 'slug')
 
 
 admin.site.register(IngredientForRecipe, IngredientForRecipeAdmin)
