@@ -6,18 +6,33 @@ User = get_user_model()
 
 
 class Tag(models.Model):
+    RED = 'RED'
+    ORANGE = 'OR'
+    YELLOW = 'YE'
+    GREEN = 'GR'
+    BLUE = 'BL'
+    PURPLE = 'PU'
+
+    COLORS_CHOICES = (
+        (RED, 'Красный'),
+        (ORANGE, 'Оранжевый'),
+        (YELLOW, 'Желтый'),
+        (GREEN, 'Зеленый'),
+        (BLUE, 'Синий'),
+        (PURPLE, 'Фиолетовый'),
+    )
+
     name = models.CharField(
         verbose_name='Название',
         help_text='Введите название тега',
         max_length=200,
         unique=True,
     )
-    color = models.CharField(
-        verbose_name='Цвет',
-        help_text='Введите цвет тега',
-        unique=True,
-        null=False,
-        max_length=7
+    color = models.TextField(
+        verbose_name='Цвет тега в HEX',
+        max_length=10,
+        choices=COLORS_CHOICES,
+        blank=True,
     )
     slug = models.CharField(
         verbose_name='Уникальный слаг',
