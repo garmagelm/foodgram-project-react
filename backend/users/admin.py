@@ -12,8 +12,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('author', 'user', 'created_at')
-    list_filter = ('created_at',)
+    list_display = ('author', 'user')
 
 
 admin.site.register(User, UserAdmin)
