@@ -63,10 +63,10 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     ingredients = models.ManyToManyField(
-        Ingredient,
-        through='RecipeIngredient',
-        verbose_name='Список ингредиентов',
-        help_text='Выберите ингредиенты',
+        'Ingredient',
+        through='IngredientForRecipe',
+        through_fields=('recipe', 'ingredient'),
+        verbose_name='Ингредиенты'
     )
     tags = models.ManyToManyField(
         Tag,
@@ -105,7 +105,6 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
