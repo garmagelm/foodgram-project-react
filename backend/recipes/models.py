@@ -100,9 +100,6 @@ class Recipe(models.Model):
         verbose_name='Время приготовления в минутах',
         help_text='Укажите время приготовления в минутах',
     )
-    pub_date = models.DateTimeField(
-        auto_now_add=True, verbose_name='Дата публикации'
-    )
 
     class Meta:
         verbose_name = 'Рецепт'

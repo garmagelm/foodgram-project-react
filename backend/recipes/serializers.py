@@ -114,7 +114,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 'Ингредиенты не должны повторяться'
             )
-        data['ingredients'] = ingredients
         return data
 
     def add_recipe_ingredient(self, ingredients, recipe):
