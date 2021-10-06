@@ -34,23 +34,29 @@ docker-compose up --build -d
 ```
 2. Выполняем миграцию командой 
 ```bash
-docker-compose exec web python manage.py migrate --noinput
+docker-compose exec backend python manage.py migrate --noinput
 ```
 3. Создаем суперпользователя 
 ```bash
-docker-compose exec web python manage.py createsuperuser
+docker-compose exec backend python manage.py createsuperuser
 ```
 4. Собераем файлы статики в одну директорию: 
 ```bash
-docker-compose exec web python manage.py collectstatic --no-input
+docker-compose exec backend python manage.py collectstatic --no-input
 ```
-5. Команда для остановки запущенных docker-контейнеров и удаление их:
+5. В backend создаем фикстуры 
+```bash
+docker-compose exec backend python manage.py loaddata ingredients.json
+```
+6. Команда для остановки запущенных docker-контейнеров и удаление их:
 ```bash
 docker-compose down
 ```
-6. В backend создаем фикстуры 
+
+7. Вход в админку:
 ```bash
-docker-compose exec web python manage.py loaddata ingredients.json
+email: admin@yandex.ru
+пароль: garmagelm12345
 ```
 
 ***Стек технологий:***
