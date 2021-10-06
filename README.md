@@ -72,4 +72,4 @@ email: admin@yandex.ru
 
 ![workflow](https://github.com/garmagelm/foodgram-project-react/actions/workflows/foodgram_project.yml/badge.svg)
 
-Развернутый на сервере проект (http://62.84.117.104/)
+Развернутый на сервере проект (http://130.193.37.127)
