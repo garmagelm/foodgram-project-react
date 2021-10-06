@@ -150,7 +150,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        return RecipeSerializer(instance).data
+        return RecipeReadSerializer(instance).data
 
 
 class RecipeReadSerializer(RecipeSerializer):
