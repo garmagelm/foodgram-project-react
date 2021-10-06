@@ -22,6 +22,7 @@ Django==2.2.20
 django-colorfield==0.4.3
 django-cors-headers==3.7.0
 django-environ==0.7.0
+django-extra-fields==3.0.2
 django-filter==2.4.0
 django-import-export==2.6.0
 django-templated-mail==1.1.1
