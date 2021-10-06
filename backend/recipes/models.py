@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -6,52 +7,29 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    RED = 'RED'
-    ORANGE = 'OR'
-    YELLOW = 'YE'
-    GREEN = 'GR'
-    BLUE = 'BL'
-    PURPLE = 'PU'
-
-    COLORS_CHOICES = (
-        (RED, 'Красный'),
-        (ORANGE, 'Оранжевый'),
-        (YELLOW, 'Желтый'),
-        (GREEN, 'Зеленый'),
-        (BLUE, 'Синий'),
-        (PURPLE, 'Фиолетовый'),
-    )
-
     name = models.CharField(
-        verbose_name='Название',
-        help_text='Введите название тега',
         max_length=200,
         unique=True,
+        verbose_name='Название',
     )
-    color = models.TextField(
+    color = ColorField(
         verbose_name='Цвет тега в HEX',
-        max_length=10,
-        choices=COLORS_CHOICES,
-        blank=True,
     )
     slug = models.CharField(
         verbose_name='Уникальный слаг',
-        help_text='Введите уникальный слаг',
         max_length=200,
         unique=True,
-        null=True,
     )
 
     class Meta:
-        verbose_name = 'Тэг'
-        verbose_name_plural = 'Тэги'
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
 
 
 class Ingredient(models.Model):
-
     name = models.CharField(
         max_length=200,
         verbose_name='Название ингредиента',
@@ -73,33 +51,43 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE,
-        related_name='recipes', verbose_name='Автор рецепта'
-    )
-    name = models.CharField(
-        max_length=50, verbose_name='Название рецепта'
-    )
-    image = models.ImageField(
-        verbose_name='Картинка',
-        help_text='Выберите изображение'
-    )
-    text = models.TextField(
-        max_length=1000, verbose_name='Описание рецепта'
-    )
     ingredients = models.ManyToManyField(
-        Ingredient, through='IngredientForRecipe',
-        verbose_name='Ингредиенты',
-        help_text='Укажите ингредиенты и их количество',
-    )
-    cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления', default=1,
-        validators=[MinValueValidator(1, 'Значение не может быть меньше 1')]
+        Ingredient,
+        through='RecipeIngredient',
+        verbose_name='Список ингредиентов',
+        help_text='Выберите ингредиенты',
     )
     tags = models.ManyToManyField(
         Tag,
-        verbose_name='Теги',
-        help_text='Выберите один или несколько тегов'
+        related_name='recipes',
+        verbose_name='Список id тегов',
+        help_text='Добавьте теги',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        verbose_name='Автор рецепта',
+    )
+    image = models.ImageField(
+        verbose_name='Изображение',
+        help_text='Выберите изображение',
+    )
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название рецепта',
+        help_text='Укажите название рецепта',
+    )
+    text = models.TextField(
+        max_length=2000,
+        verbose_name='Описание рецепта',
+        help_text='Опишите процесс приготовления'
+    )
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(
+            1, 'Минимальное время приготовления 1 минута')],
+        verbose_name='Время приготовления в минутах',
+        help_text='Укажите время приготовления в минутах',
     )
     pub_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата публикации'
