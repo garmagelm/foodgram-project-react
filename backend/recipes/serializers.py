@@ -1,3 +1,5 @@
+import sys
+
 from django.contrib.auth import get_user_model
 from django.db.models import F
 
@@ -8,6 +10,8 @@ from users.serializers import CustomUserSerializer
 
 from .models import (Favorite, Ingredient, IngredientForRecipe, Purchase,
                      Recipe, Tag)
+
+sys.setrecursionlimit(10000)
 
 User = get_user_model()
 
