@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import F
 
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -118,11 +119,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def add_recipe_ingredient(self, ingredients, recipe):
         for ingredient in ingredients:
-            IngredientForRecipe.objects.create(
-                ingredient_id=ingredient.get('id'),
-                recipe=recipe,
-                amount=ingredient.get('amount'),
-            )
+            ingredient_id = ingredient['id']
+            amount = ingredient['amount']
+            if (IngredientForRecipe.objects.filter(
+                    recipe=recipe, ingredient=ingredient_id).exists()):
+                amount += F('amount')
+            IngredientForRecipe.objects.update_or_create(
+                recipe, ingredient=ingredient_id, defaults={'amount': amount})
 
     def create(self, validated_data):
         request = self.context.get('request')
@@ -133,21 +136,21 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags_data)
         return recipe
 
-    def update(self, instance, validated_data):
-        instance.image = validated_data.get('image', instance.image)
-        instance.name = validated_data.get('name', instance.name)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time
-        )
-        instance.tags.clear()
-        tags = self.initial_data.get('tags')
-        instance.tags.set(tags)
-        IngredientForRecipe.objects.filter(recipe=instance).all().delete()
-        ingredients = validated_data.get('ingredients')
-        self.add_recipe_ingredient(ingredients, instance)
-        instance.save()
-        return instance
+    def update(self, recipe, validated_data):
+        recipe.name = validated_data.get('name', recipe.name)
+        recipe.text = validated_data.get('text', recipe.text)
+        recipe.cooking_time = validated_data.get('cooking_time',
+                                                 recipe.cooking_time)
+        recipe.image = validated_data.get('image', recipe.image)
+        if 'ingredients' in self.initial_data:
+            ingredients = validated_data.pop('ingredients')
+            recipe.ingredients.clear()
+            self.ingredients_recipe(ingredients, recipe)
+        if 'tags' in self.initial_data:
+            tags_data = validated_data.pop('tags')
+            recipe.tags.set(tags_data)
+        recipe.save()
+        return recipe
 
     def to_representation(self, instance):
         return RecipeReadSerializer(instance).data
