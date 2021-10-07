@@ -31,6 +31,7 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-id')
+    serializer_class = RecipeReadSerializer
     filter_class = RecipeFilter
     pagination_class = PageNumberPagination
     permission_classes = [AdminOrAuthorOrReadOnly, ]
