@@ -1,36 +1,48 @@
 from django.contrib import admin
 
-from import_export.admin import ImportMixin
-
-from .models import Favorite, Ingredient, IngredientForRecipe, Recipe, Tag
-from .resources import IngredientResource
+from .models import (Favorite, Ingredient, IngredientRecipe, Recipe, RecipeTag,
+                     ShoppingCart, Tag)
 
 
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'recipe', 'user')
-
-
-class IngredientForRecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ingredient', 'recipe', 'amount')
-
-
-class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'name',)
-    list_filter = ('author', 'name', 'tags')
-
-
-class IngredientAdmin(ImportMixin, admin.ModelAdmin):
-    list_filter = ('id', 'name', 'measurement_unit',)
-    search_fields = ('name',)
-    resource_class = IngredientResource
-
-
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'color', 'slug')
+    list_display = ('pk', 'name', 'slug')
 
 
-admin.site.register(IngredientForRecipe, IngredientForRecipeAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'measurement_unit')
+    list_filter = ['name']
+    search_fields = ('name',)
+
+
+class IngredientRecipeInline(admin.TabularInline):
+    model = IngredientRecipe
+    min_num = 1
+    extra = 1
+
+
+class RecipeTagInline(admin.TabularInline):
+    model = RecipeTag
+    min_num = 1
+    extra = 0
+
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'author', 'favorited_by')
+    list_filter = ['name', 'author', 'tags']
+    inlines = (IngredientRecipeInline, RecipeTagInline)
+
+    def favorited_by(self, obj):
+        return obj.favorited_by.all().count()
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'recipe')
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'recipe')
