@@ -4,9 +4,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
-from .models import Follow
 from recipes.paginator import ResultsSetPagination
+from .models import Follow
 from .serializers import FollowSerializer, ShowFollowSerializer
 
 User = get_user_model()
