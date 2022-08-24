@@ -96,22 +96,22 @@ class AddRecipeSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
-            raise ValidationError('Нужно выбрать минимум 1 ингридиент!')
+            raise ValidationError('You need to choose at least 1 ingredient!')
         for ingredient in ingredients:
             if int(ingredient['amount']) <= 0:
-                raise ValidationError('Количество должно быть положительным!')
+                raise ValidationError('The quantity must be positive!')
         ingredients_count = len(ingredients)
         ingredients_set = len(
             set([i['id'] for i in ingredients])
         )
         if ingredients_count > ingredients_set:
-            raise ValidationError('Ингредиенты не должны повторяться')
+            raise ValidationError('Ingredients should not be repeated')
         return data
 
     def validate_cooking_time(self, data):
         if data <= 0:
-            raise ValidationError('Время готовки не может быть'
-                                  ' отрицательным числом или нулем!')
+            raise ValidationError("Cooking time can't be"
+                                  " negative number or zero!")
         return data
 
     def add_recipe_ingredients(self, ingredients, recipe):
@@ -168,7 +168,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
         user = data['user']
         recipe_id = data['recipe'].id
         if Favorite.objects.filter(user=user, recipe__id=recipe_id).exists():
-            raise ValidationError('Рецепт уже добавлен в избранное!')
+            raise ValidationError('The recipe has already been added to favorites!')
         return data
 
     def to_representation(self, instance):
@@ -190,7 +190,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         recipe_id = data['recipe'].id
         if ShoppingCart.objects.filter(user=user,
                                        recipe__id=recipe_id).exists():
-            raise ValidationError('Рецепт уже добавлен в список покупок')
+            raise ValidationError('The recipe has already been added to the shopping list')
         return data
 
     def to_representation(self, instance):

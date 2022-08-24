@@ -44,9 +44,9 @@ class FollowSerializer(serializers.ModelSerializer):
         if Follow.objects.filter(user=user,
                                  following__id=following_id).exists():
             raise serializers.ValidationError(
-                'Вы уже подписаны на этого пользователя')
+                'You are already subscribed to this user')
         if user.id == following_id:
-            raise serializers.ValidationError('Нельзя подписаться на себя')
+            raise serializers.ValidationError("You can't subscribe to yourself")
         return data
 
 
