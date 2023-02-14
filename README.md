@@ -17,7 +17,7 @@ git clone https://github.com/garmagelm/foodgram-project-react
 python3 -m venv venv
 ```
 * Creating a file .env
-* Enter the values of the secrets: 
+* Enter the values of the secrets:
 ```
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=<название вашей базы данных>
@@ -44,7 +44,7 @@ docker-compose exec backend python manage.py createsuperuser
 ```bash
 docker-compose exec backend python manage.py collectstatic --no-input
 ```
-5. In the backend, we create fixtures 
+5. In the backend, we create fixtures
 ```bash
 docker-compose exec backend python manage.py loaddata ingredients.json
 ```
