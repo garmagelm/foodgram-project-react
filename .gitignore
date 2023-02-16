@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.DS_Store
 
 # C extensions
 *.so
@@ -131,3 +130,7 @@ dmypy.json
 
 # .idea
 .idea
+
+# Other
+
+.DS_Store
