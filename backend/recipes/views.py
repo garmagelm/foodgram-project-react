@@ -10,9 +10,14 @@ from .mixins import RetriveAndListViewSet
 from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from .paginator import ResultsSetPagination
 from .permissions import IsAuthorOrAdmin
-from .serializers import (AddRecipeSerializer, FavouriteSerializer,
-                          IngredientsSerializer, ShoppingCartSerializer,
-                          ShowRecipeFullSerializer, TagsSerializer)
+from .serializers import (
+    AddRecipeSerializer,
+    FavouriteSerializer,
+    IngredientsSerializer,
+    ShoppingCartSerializer,
+    ShowRecipeFullSerializer,
+    TagsSerializer,
+)
 from .utils import download_file_response, get_ingredients_list
 
 
@@ -33,7 +38,7 @@ class TagsViewSet(RetriveAndListViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all().order_by('-id')
+    queryset = Recipe.objects.all().order_by("-id")
     serializer_class = ShowRecipeFullSerializer
     permission_classes = [IsAuthorOrAdmin]
     filter_backends = [DjangoFilterBackend]
@@ -41,15 +46,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = ResultsSetPagination
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
+        if self.request.method == "GET":
             return ShowRecipeFullSerializer
         return AddRecipeSerializer
 
     @action(detail=True, permission_classes=[IsAuthorOrAdmin])
     def favorite(self, request, pk):
-        data = {'user': request.user.id, 'recipe': pk}
-        serializer = FavouriteSerializer(data=data,
-                                         context={'request': request})
+        data = {"user": request.user.id, "recipe": pk}
+        serializer = FavouriteSerializer(data=data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -64,9 +68,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, permission_classes=[IsAuthorOrAdmin])
     def shopping_cart(self, request, pk):
-        data = {'user': request.user.id, 'recipe': pk}
-        serializer = ShoppingCartSerializer(data=data,
-                                            context={'request': request})
+        data = {"user": request.user.id, "recipe": pk}
+        serializer = ShoppingCartSerializer(data=data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -75,12 +78,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def delete_shopping_cart(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        shopping_cart = get_object_or_404(ShoppingCart,
-                                          user=user, recipe=recipe)
+        shopping_cart = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
         to_buy = get_ingredients_list(request)
-        return download_file_response(to_buy, 'to_buy.txt')
+        return download_file_response(to_buy, "to_buy.txt")
