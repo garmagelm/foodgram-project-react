@@ -1,67 +1,41 @@
-# Project: Foodgram
-A publishing application, editing and adding recipes to favorites with the "shopping cart" function, which provides a shopping list for all selected recipes.
+# Foodgram Application
 
-It works on the basis of Django & React.
+Foodgram is a publishing application that allows users to add, edit and save recipes to their favorites. It also includes a shopping cart function, which generates a shopping list for all selected recipes. The application is built using Django & React frameworks.
 
-***Setting:***
-1. Install [Docker](https://docs.docker.com/engine/install /).
-2. Clone the repository from GitHub with the command in the terminal
-```bash
-git clone https://github.com/garmagelm/foodgram-project-react
-```
+***Getting started***
 
-***Setting up a variable environment .env:***
-
-* Creating a virtual environment with the command
-```bash
-python3 -m venv venv
-```
-* Creating a file .env
-* Enter the values of the secrets:
+1. Install Docker from the official website (https://docs.docker.com/engine/install/)
+2. Clone the repository from GitHub using the command in the terminal: git clone https://github.com/garmagelm/foodgram-project-react
+3. Create a virtual environment using the command: python3 -m venv venv
+4. Create a .env file and enter the following secrets:
+makefile
+5. Copy code
 ```
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=<название вашей базы данных>
-POSTGRES_USER=<имя пользователя в postgres>
-POSTGRES_PASSWORD=<пароль пользователя>
-DB_HOST=db  # Сюда можете прописать localhost, либо оставить, если будете использовать docker-compose
-DB_PORT=5432
-```
+DB_NAME=<your_database_name>
+POSTGRES_USER=<your_postgres_username>
+POSTGRES_PASSWORD=<your_postgres_password>
+DB_HOST=db
+DB_PORT=5432```
 
-***Commands for Docker***
-1. Launch the container from the infra folder with the command
-```bash
-docker-compose up --build -d
-```
-2. Perform the migration with the command
-```bash
-docker-compose exec backend python manage.py migrate --noinput
-```
-3. Creating a superuser
-```bash
-docker-compose exec backend python manage.py createsuperuser
-```
-4. Collect static files in one directory:
-```bash
-docker-compose exec backend python manage.py collectstatic --no-input
-```
-5. In the backend, we create fixtures
-```bash
-docker-compose exec backend python manage.py loaddata ingredients.json
-```
-6. Command to stop running docker containers and delete them:
-```bash
-docker-compose down
-```
+Note: You can use localhost instead of db if you're not using docker-compose.
 
-***Tech systems used:***
+6. Launch the container from the infra folder with the command: ```docker-compose up --build -d```
+7. Perform the migration with the command: ```docker-compose exec backend python manage.py migrate --noinput```
+8. Create a superuser using the command: ```docker-compose exec backend python manage.py createsuperuser```
+9. Collect static files in one directory: ```docker-compose exec backend python manage.py collectstatic --no-input```
+10. Create fixtures in the backend: ```docker-compose exec backend python manage.py loaddata ingredients.json```
+11. To stop running docker containers and delete them, use the command: ```docker-compose down```
 
-* Python3
+***Tech stack***
+
+* Python 3
 * Django
 * Django REST Framework
 * Docker Desktop
-* Posgresql
+* PostgreSQL
+* Deployment
 
+The project is currently deployed on the server http://foodhelp.hopto.org.
 
-![workflow](https://github.com/garmagelm/foodgram-project-react/actions/workflows/foodgram_project.yml/badge.svg)
-
-The project deployed on the server http://foodhelp.hopto.org
+Note: Replace <your_database_name>, <your_postgres_username> and <your_postgres_password> with your own values in the .env file.
