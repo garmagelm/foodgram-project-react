@@ -16,7 +16,8 @@ DB_NAME=<your_database_name>
 POSTGRES_USER=<your_postgres_username>
 POSTGRES_PASSWORD=<your_postgres_password>
 DB_HOST=db
-DB_PORT=5432```
+DB_PORT=5432
+```
 
 Note: You can use localhost instead of db if you're not using docker-compose.
 
